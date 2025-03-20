@@ -1,0 +1,44 @@
+import org.apache.spark.sql.*;
+import org.apache.spark.sql.functions.*;
+import org.apache.log4j.Logger;
+
+public class GroupingDemo {
+    private static final Logger logger = Logger.getLogger(GroupingDemo.class);
+
+    public static void main(String[] args) {
+        SparkSession spark = SparkSession.builder()
+                .appName("Agg Demo")
+                .master("local[2]")
+                .getOrCreate();
+
+        logger.info("Starting GroupingDemo");
+
+        Dataset<Row> invoiceDf = spark.read()
+                .format("csv")
+                .option("header", "true")
+                .option("inferSchema", "true")
+                .load("data/invoices.csv");
+
+        Column numInvoices = functions.countDistinct("InvoiceNo").alias("NumInvoices");
+        Column totalQuantity = functions.sum("Quantity").alias("TotalQuantity");
+        Column invoiceValue = functions.expr("round(sum(Quantity * UnitPrice),2) as InvoiceValue");
+
+        Dataset<Row> exSummaryDf = invoiceDf
+                .withColumn("InvoiceDate", functions.to_date(functions.col("InvoiceDate"), "dd-MM-yyyy H.mm"))
+                .where("year(InvoiceDate) == 2010")
+                .withColumn("WeekNumber", functions.weekofyear(functions.col("InvoiceDate")))
+                .groupBy("Country", "WeekNumber")
+                .agg(numInvoices, totalQuantity, invoiceValue);
+
+        exSummaryDf.coalesce(1)
+                .write()
+                .format("parquet")
+                .mode("overwrite")
+                .save("output");
+
+        exSummaryDf.sort("Country", "WeekNumber").show();
+
+        logger.info("Finished GroupingDemo");
+        spark.stop();
+    }
+}

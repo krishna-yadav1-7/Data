@@ -1,0 +1,3 @@
+﻿Issued date,Invoice ID,Type,Due date,Status,Currency,Invoice amount,Balance due,Billing period,Service provider,Charge type,Purchase order ID,Payer account ID
+"October 1, 2024","1866173237","Invoice","October 1, 2024","Past due","USD","1.08","1.08","September 2024","AWS Inc. - Marketplace","Usage","-","187564201557"
+"October 1, 2024","1865878717","Invoice","October 1, 2024","Past due","INR","71.16","71.16","September 2024","AWS India","Usage","-","187564201557"

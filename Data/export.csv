@@ -1,0 +1,2 @@
+path,name,size,modificationTime
+dbfs:/user/hive/warehouse/word_count_table/part-00000-4d96d2c3-5410-47fa-8c07-ea32d2aeb0d7-c000.snappy.parquet,part-00000-4d96d2c3-5410-47fa-8c07-ea32d2aeb0d7-c000.snappy.parquet,2173,1741363042000
